@@ -1,11 +1,6 @@
 ----------------------- REVIEW 1 ---------------------
 
 ----------- Overall evaluation -----------
-The paper presents a modeling paradigm for distributed fault tolerant systems built around the SAL model checker with the goal to work with models that are near the implementation level of the system but in a way that scales for model checking. The paradigm is based on calendar automaton with the calendar events being associated with channels for communication to coordinate global actions in the system; local transitions are atomic following global message actions. Such a paradigm lends itself naturally to different fault models as those only impact the channels. This modular fault model, termed the synchronous kibitzer, isolates the impact of the chosen fault model to simplify verification. The final piece of the modeling paradigm is an abstract transition system based on disjunctive invariants. The abstraction mitigates the near implementation level detail of the model so the developer is able to focus on key transitions and states.
-
-  The paper demonstrates the modeling paradigm with a full verification of the hybrid oral messages (OMH) algorithm. The base model is fully asynchronous built on a relay-receiver decomposition from [10], and that model is then fully verified against a set of invariants in different configurations of relays and receivers to see how it scales by model size. There is no comparison to give perspective on the scaling results so it is hard to know if the results are significant.
-
-  Three additional variants of the model are then derived: one changes the fault model, the other adds time triggered messaging, and the final changes the majority algorithm to use mid-value selection. The paper quantifies the impact on the verification of each of these changes to assess how much the model had to be changed. The point is to show that the paradigm is modular and localizes changes. The paper indicates that the variant models took hours to create and all easily re-verified; although, it is not clear if this result is in consequence of the modeling paradigm, the model implementation based on the relay-receiver decomposition, or the familiarity of the developers with the model. The paper suggests it is a consequence of the modeling paradigm due to associating calendar events with channels.
 
   The modeling paradigm lends itself well to the OMH verification. Like any paradigm, it is hard to generalize beyond this case study, but the results are interesting and merit attention as the approach fits so well in the SAL model checker. I might suggest that the term "framework" is too strong for the contribution. It is not clear that the authors have created a "framework" per se but rather a way to model systems inside of SAL. A framework, in my mind, suggests a full blown tool purpose built to support a design paradigm. That seems a stretch for the proof of concept modeling exercise presented.
 
@@ -25,28 +20,6 @@ The paper presents a modeling paradigm for distributed fault tolerant systems bu
 ----------------------- REVIEW 2 ---------------------
 
 ----------- Overall evaluation -----------
-Summary
-
-This papers presents a framework for model-checking fault-tolerant
-protocol combining three abstractions:
-
-1) calendar automata (CA) to abstract message passing between channels
-in the distributed system,
-
-2) symbolic fault injection (SFI) to abstract faults while avoiding
-adding state variables into the model of the protocol, and
-
-3) abstract transition systems (ATS).
-
-The main focus is modularity and separation of concerns.
-
-The framework has been used to prove certain properties of the OMH
-protocol. Authors claim that this is the first parametric (on the
-number of nodes) model-checked implementation of this
-protocol. Moreover, they modify several aspects of the modeling of OMH
-protocol showing the isolated changes in the implementation requires
-isolated changes in the three main abstractions that form the
-framework (CA, SFI, and ATS).
 
 Evaluation:
 
@@ -78,13 +51,6 @@ be cal?
 ----------------------- REVIEW 3 ---------------------
 
 ----------- Overall evaluation -----------
-The paper presents an approach to verification of fault-tolerant
-distributed systems. The approach is modular and relies on calendar
-automata, symbolic fault injection, and abstract transition systems.
-As an example, a model of hybrid oral messages is is modeled in the
-SAL language and successfully verified using k-induction (for fixed
-number of nodes).
-
 The paper is a very nice read, and is very much on topic for NFM. The
 modelling methodology is applicable and practical, and the paper
 provides a nice blueprint for verification of fault-tolerant systems.
