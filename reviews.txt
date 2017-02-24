@@ -1,9 +1,4 @@
 ----------------------- REVIEW 1 ---------------------
-PAPER: 82
-TITLE: Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
-AUTHORS: Lee Pike and Benjamin Jones
-
-Overall evaluation: 1
 
 ----------- Overall evaluation -----------
 The paper presents a modeling paradigm for distributed fault tolerant systems built around the SAL model checker with the goal to work with models that are near the implementation level of the system but in a way that scales for model checking. The paradigm is based on calendar automaton with the calendar events being associated with channels for communication to coordinate global actions in the system; local transitions are atomic following global message actions. Such a paradigm lends itself naturally to different fault models as those only impact the channels. This modular fault model, termed the synchronous kibitzer, isolates the impact of the chosen fault model to simplify verification. The final piece of the modeling paradigm is an abstract transition system based on disjunctive invariants. The abstraction mitigates the near implementation level detail of the model so the developer is able to focus on key transitions and states.
@@ -28,11 +23,6 @@ The paper presents a modeling paradigm for distributed fault tolerant systems bu
 
 
 ----------------------- REVIEW 2 ---------------------
-PAPER: 82
-TITLE: Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
-AUTHORS: Lee Pike and Benjamin Jones
-
-Overall evaluation: 1
 
 ----------- Overall evaluation -----------
 Summary
@@ -86,11 +76,6 @@ be cal?
 
 
 ----------------------- REVIEW 3 ---------------------
-PAPER: 82
-TITLE: Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
-AUTHORS: Lee Pike and Benjamin Jones
-
-Overall evaluation: 2
 
 ----------- Overall evaluation -----------
 The paper presents an approach to verification of fault-tolerant
