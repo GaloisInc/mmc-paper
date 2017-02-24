@@ -1,0 +1,106 @@
+----------------------- REVIEW 1 ---------------------
+PAPER: 82
+TITLE: Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
+AUTHORS: Lee Pike and Benjamin Jones
+
+Overall evaluation: 1
+
+----------- Overall evaluation -----------
+The paper presents a modeling paradigm for distributed fault tolerant systems built around the SAL model checker with the goal to work with models that are near the implementation level of the system but in a way that scales for model checking. The paradigm is based on calendar automaton with the calendar events being associated with channels for communication to coordinate global actions in the system; local transitions are atomic following global message actions. Such a paradigm lends itself naturally to different fault models as those only impact the channels. This modular fault model, termed the synchronous kibitzer, isolates the impact of the chosen fault model to simplify verification. The final piece of the modeling paradigm is an abstract transition system based on disjunctive invariants. The abstraction mitigates the near implementation level detail of the model so the developer is able to focus on key transitions and states.
+
+  The paper demonstrates the modeling paradigm with a full verification of the hybrid oral messages (OMH) algorithm. The base model is fully asynchronous built on a relay-receiver decomposition from [10], and that model is then fully verified against a set of invariants in different configurations of relays and receivers to see how it scales by model size. There is no comparison to give perspective on the scaling results so it is hard to know if the results are significant.
+
+  Three additional variants of the model are then derived: one changes the fault model, the other adds time triggered messaging, and the final changes the majority algorithm to use mid-value selection. The paper quantifies the impact on the verification of each of these changes to assess how much the model had to be changed. The point is to show that the paradigm is modular and localizes changes. The paper indicates that the variant models took hours to create and all easily re-verified; although, it is not clear if this result is in consequence of the modeling paradigm, the model implementation based on the relay-receiver decomposition, or the familiarity of the developers with the model. The paper suggests it is a consequence of the modeling paradigm due to associating calendar events with channels.
+
+  The modeling paradigm lends itself well to the OMH verification. Like any paradigm, it is hard to generalize beyond this case study, but the results are interesting and merit attention as the approach fits so well in the SAL model checker. I might suggest that the term "framework" is too strong for the contribution. It is not clear that the authors have created a "framework" per se but rather a way to model systems inside of SAL. A framework, in my mind, suggests a full blown tool purpose built to support a design paradigm. That seems a stretch for the proof of concept modeling exercise presented.
+
+  A few random thoughts from reading the paper:
+
+  "The framework combines ideas from the literature and folklore to build scalable and modular formal models suitable for infinite-state model-checking, and it reduces the need for ad-hoc abstractions and optimizations." What is "folklore" in this context and how does it relate to the framework? Does it define an aspect of the framework. Also, the introduction and abstract are super vague on the characteristics of this framework: what it looks like, how it works, etc. How is this new framework different from the dozens of other frameworks that claim similar ability? The introduction and abstract shed no light on these questions.
+
+  Maybe introduce the \sigma notation with the \sigma(v) access to the state vector. Also define the \sigma[...] and \sigma^\prime notation for updates and next-state.
+
+  Law 3 for Calendar automaton is unclear. If there exists a single calendar event that is at its timeout, then all future states do not include that event in their calendar, but what if there are multiple calendar events at their timeout? Do all those events fire in a single step? The definition, as I understand it, forces them all to fire otherwise there would exist a successor state that includes on of those several events. Maybe clarify.
+
+  On the definition of faults, send and receive are redefined to return a messages rather than be true/false. For example, recv(i,j,t) = send(i,j,t) is not consistent with the prior definitions that take an additional argument which is the message.
+
+  Where does the set of abstract predicates come from, A_1 \vee ... \vee A_n? That seems to be an important missing piece.
+
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 82
+TITLE: Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
+AUTHORS: Lee Pike and Benjamin Jones
+
+Overall evaluation: 1
+
+----------- Overall evaluation -----------
+Summary
+
+This papers presents a framework for model-checking fault-tolerant
+protocol combining three abstractions:
+
+1) calendar automata (CA) to abstract message passing between channels
+in the distributed system,
+
+2) symbolic fault injection (SFI) to abstract faults while avoiding
+adding state variables into the model of the protocol, and
+
+3) abstract transition systems (ATS).
+
+The main focus is modularity and separation of concerns.
+
+The framework has been used to prove certain properties of the OMH
+protocol. Authors claim that this is the first parametric (on the
+number of nodes) model-checked implementation of this
+protocol. Moreover, they modify several aspects of the modeling of OMH
+protocol showing the isolated changes in the implementation requires
+isolated changes in the three main abstractions that form the
+framework (CA, SFI, and ATS).
+
+Evaluation:
+
+I agree with authors that the verification itself of the protocol
+scaling to a larger number of relays and receivers is already a
+contribution. Moreover, the modular combination of the three main
+abstractions seems to pay off when the protocol is modified in
+different ways.
+
+However, there are several points that authors should address.  As
+authors mention, the ideas of calendar automata and abstract
+transition systems have been applied already in the past (Dutertre and
+Sorea and Rushby). However, it is not clear to me if the idea of
+symbolic fault injection is a contribution of this paper or not.
+
+Rushby already verified the OMH protocol but it seems that it scaled
+only up to 7 relays and 2 receivers but authors do not explain why
+proposed solution is better than Rushby's. Is it simply due to the use
+of a different engine (k-induction vs BDD-based model checking?) or
+does the modular combination of the three abstractions play an
+important role?
+
+Minor typos:
+
+- What is c in the formula just at the beginning of page 4?  Shouldn't
+be cal?
+
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 82
+TITLE: Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
+AUTHORS: Lee Pike and Benjamin Jones
+
+Overall evaluation: 2
+
+----------- Overall evaluation -----------
+The paper presents an approach to verification of fault-tolerant
+distributed systems. The approach is modular and relies on calendar
+automata, symbolic fault injection, and abstract transition systems.
+As an example, a model of hybrid oral messages is is modeled in the
+SAL language and successfully verified using k-induction (for fixed
+number of nodes).
+
+The paper is a very nice read, and is very much on topic for NFM. The
+modelling methodology is applicable and practical, and the paper
+provides a nice blueprint for verification of fault-tolerant systems.
+In addition, all SAL models are very nice and available online.
