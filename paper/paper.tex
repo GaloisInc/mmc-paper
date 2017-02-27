@@ -73,11 +73,11 @@ large state spaces and non-determinism. The typical approach to
 controlling complexity is to construct ad-hoc abstractions of faults,
 message-passing, and behaviors.  However, these abstractions come
 at the price of divorcing the model from its implementation and
-making refactoring difficult. In this work, we present a framework
-for fault-tolerant distributed system verification that combining
+making refactoring difficult. In this work, we present a model
+for fault-tolerant distributed system verification that combines
 ideas from the literature including calendar automata, symbolic
 fault injection, and abstract transition systems, and then we apply
-the framework to model-checking various implementations of the
+the model to model-checking various implementations of the
 Hybrid Oral Messages algorithm that differ in the fault model,
 timing model, and local node behavior. We show that despite being
 implementation-level models, the verifications are scalable and
@@ -94,11 +94,11 @@ The verification of this class of systems has usually been at the algorithmic le
 
 There are at least two classes of abstractions that separate protocol-level models of fault-tolerant distributed algorithms from their implementations.  One is to intertwine the environmental model with the system description. For example, the behaviors of nodes are naturally specified as a transition system in which transitions are guarded by the node's fault state. But faults are part of the environment; an implementation does not typically use its own fault status to choose actions! Another class of abstractions is used to simplify models.  For example, message passing might be abstracted with shared state, or a node's local behavior is elided and instead, the output is constrained by a \emph{specification} of the behavior.
 
-In this paper, we present a framework for modeling fault-tolerant distributed systems, and use that framework to verify several variant implementations of the Byzantine fault-tolerant Hybrid Oral Messages algorithm (\OMH)~\cite{Lincoln-Rushby}. The framework combines ideas from the literature and folklore to build scalable and modular formal models suitable for infinite-state model-checking, and it reduces the need for ad-hoc abstractions and optimizations. In Section~\ref{sec:model}, we present the important aspects of the framework, including calendar automata, originally developed by Dutertre and Sorea~\cite{cal}, symbolic fault-injection, and abstract transition systems for verification.
+In this paper, we present a fault-tolerant distributed systems model, and use that model to verify several variant implementations of the Byzantine fault-tolerant Hybrid Oral Messages algorithm (\OMH)~\cite{Lincoln-Rushby}. The model combines ideas from the literature and folklore to build scalable and modular formal models suitable for infinite-state model-checking, and it reduces the need for ad-hoc abstractions and optimizations. In Section~\ref{sec:model}, we present the important aspects of the model, including calendar automata, originally developed by Dutertre and Sorea~\cite{cal}, symbolic fault-injection, and abstract transition systems for verification.
 
  %% There are three aspects of the framework: (1) \emph{calendar automata}, originally developed by Dutertre and Sorea~\cite{cal} for specifying real-time systems; (2) symbolic fault injection for decomposing the effects of faults from the system specification, and (3) \emph{abstract state machines observers}, useful for abstracting counterexamples. The framework is suitable for infinite-state model-checking supported by satisfiability modulo theories (SMT).
 
-We use the framework to verify implementation-level models of $\OMH$ in which message passing is explicit, nodes are not forced to execute strictly synchronously, and voting is explicit. In short, the models corresponds closely with an implementation of the algorithm. In Section~\ref{sec:byz}, we first describe \OMH, then an implementation of it that uses the Boyer-Moore Fast Majority Vote algorithm (Fast~MJRT)~\cite{mjrty}. We then describe a set of modular invariants, such that the invariants only concern specific aspects of the model (e.g., faults, local node behavior, or the passage of time). The verification is interesting in its own right, as it is the first fully parametric (on the number of nodes) model-checked \emph{implementation} of the algorithm.
+We use the model to verify implementation-level models of $\OMH$ in which message passing is explicit, nodes are not forced to execute strictly synchronously, and voting is explicit. In short, the models corresponds closely with an implementation of the algorithm. In Section~\ref{sec:byz}, we first describe \OMH, then an implementation of it that uses the Boyer-Moore Fast Majority Vote algorithm (Fast~MJRT)~\cite{mjrty}. We then describe a set of modular invariants, such that the invariants only concern specific aspects of the model (e.g., faults, local node behavior, or the passage of time). The verification is interesting in its own right, as it is the first fully parametric (on the number of nodes) model-checked \emph{implementation} of the algorithm.
 
 In Section~\ref{sec:experimental}, we first show that despite being implementation-level, the model is scalable. Developing invariants requires some user guidance, and isolated changes to an implementation should require isolated modifications to the model and proof. To demonstrate this, we modify the \OMH implementation along the dimensions of faults (by adding an omissive-asymetric fault type~\cite{omissive}), time (by making a time-triggered model), and local behavior (by changing the majority vote to a mid-value selection) and show that in each case, the modifications are small and modular.
 
@@ -116,8 +116,8 @@ The models and experiments reported herein can be found online.\footnote{\url{ht
 
 
 % ------------------------------------------------------------
-\section{Formal Framework}\label{sec:model}
-Here we describe our formal framework specialized for fault-tolerant distributed systems. The framework draws on three principal abstractions: calendar automata, symbolic fault injection, and abstract transition systems; we describe each below.
+\section{Formal Model}\label{sec:model}
+Here we describe our formal model specialized for fault-tolerant distributed systems. The model draws on three principal abstractions: calendar automata, symbolic fault injection, and abstract transition systems; we describe each below.
 
 \subsection{Calendar Automata}\label{sec:calendar}
 %% \emph{Timed automata} are specialized formalisms for verifying real-time systems~\cite{alur}. Timed automata assume the existence of continuously-varying real-valued variables, known as \emph{real-time clocks}. Model-checkers for timed-automata are specialized for verifying real-time systems in which the only infinite-valued variables are the real-time clocks.
@@ -387,7 +387,7 @@ The use of abstract transition systems not only allows us to scale proofs farthe
 
 The Hybrid Oral Messages ($\OMH$) algorithm~\cite{Lincoln-Rushby} is a variant of the classic Oral Messages ($\OM{m}$) algorithm~\cite{om}, originally developed by Thambidurai and Park~\cite{hybrid} to achieve distributed consensus in the presence of a hybrid fault model. However, $\OMH$ had a bug, as originally formulated, which was corrected and the mended algorithm was formally verified by Lincoln and Rushby using interactive theorem-proving~\cite{Lincoln-Rushby}.
 
-First, we briefly describe the algorithm, sketch our model of the algorithm within the framework presented in Section~\ref{sec:model}, then describe it's invariants.
+First, we briefly describe the algorithm, sketch our instantiation of the model for the particular protocol in Section~\ref{sec:model}, then describe it's invariants.
 
 
 \subsection{$\OMH(m)$ Algorithm}
@@ -631,7 +631,7 @@ Moreover, our work is heavily influenced by previous verifications of fault-tole
 \section{Conclusions}\label{sec:conclusions}
 This work fits within a larger project, in collaboration with Honeywell Labs, to build an \emph{architectural domain-specific language} (ADSL) for specifying and verifying distributed fault-tolerant systems. The ADSL should be able to synthesize both software and/or hardware implementations as well as formal models for verification. Before building such an ADSL, we needed a scalable general formal model to which to compile, leading to the work presented in this paper. We hypothesize that the ADSL will make refactoring even easier, and we can generate invariants or invariant templates useful for verification. Indeed, we have developed a preliminary ADSL that generates C code as well as formal models in SRI's Sally~\cite{pdr-kind}, to be described in future work.\footnote{\url{https://github.com/GaloisInc/atom-sally}}
 
-Beyond building an ADSL, another avenue of research is producing a formal proof that a software implementation satisfies the node specification in our framework. While our model of node behavior is low-level, there are gaps. For example, our work is in SAL's language of guarded commands~\cite{SAL} and needs to be either refined or verified to be equivalent to a software implementation's semantics. Another aspect is that behavior related to networking, serialization, etc. is left abstract, implicit in the $send$ and $recv$ functions.
+Beyond building an ADSL, another avenue of research is producing a formal proof that a software implementation satisfies the node specification in our formal model. While our model of node behavior is low-level, there are gaps. For example, our work is in SAL's language of guarded commands~\cite{SAL} and needs to be either refined or verified to be equivalent to a software implementation's semantics. Another aspect is that behavior related to networking, serialization, etc. is left abstract, implicit in the $send$ and $recv$ functions.
 
 %% and benign fault diagnosis (e.g., computing a CRC) is left abstract. In a software implementation, the $send$ and $recv$ functions would have to implement these behaviors.
 
