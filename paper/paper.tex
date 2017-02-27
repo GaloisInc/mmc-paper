@@ -66,24 +66,21 @@
 \maketitle
 
 \begin{abstract}
-With proof techniques like IC3 and $k$-induction, model-checking
-scales further than ever before.  Still, fault-tolerant distributed
-systems are particularly challenging to model-check given their
-large state spaces and non-determinism. The typical approach to
-controlling complexity is to construct ad-hoc abstractions of faults,
-message-passing, and behaviors.  However, these abstractions come
-at the price of divorcing the model from its implementation and
-making refactoring difficult. In this work, we present a model
-for fault-tolerant distributed system verification that combines
-ideas from the literature including calendar automata, symbolic
-fault injection, and abstract transition systems, and then we apply
-the model to model-checking various implementations of the
-Hybrid Oral Messages algorithm that differ in the fault model,
-timing model, and local node behavior. We show that despite being
-implementation-level models, the verifications are scalable and
-modular, insofar as isolated changes to an implementation require
-isolated changes to the model and proofs.  This work is carried out
-in SAL model-checker.
+With proof techniques like IC3 and $k$-induction, model-checking scales further
+than ever before. Still, fault-tolerant distributed systems are particularly
+challenging to model-check given their large state spaces and
+non-determinism. The typical approach to controlling complexity is to construct
+ad-hoc abstractions of faults, message-passing, and behaviors. However, these
+abstractions come at the price of divorcing the model from its implementation
+and making refactoring difficult. In this work, we present a model for
+fault-tolerant distributed system verification that combines ideas from the
+literature including calendar automata, symbolic fault injection, and abstract
+transition systems, and then use it to model-checking various implementations of
+the Hybrid Oral Messages algorithm that differ in the fault model, timing model,
+and local node behavior. We show that despite being implementation-level models,
+the verifications are scalable and modular, insofar as isolated changes to an
+implementation require isolated changes to the model and proofs. This work is
+carried out in SAL model-checker.
 \end{abstract}
 
 \section{Introduction}
@@ -94,13 +91,15 @@ The verification of this class of systems has usually been at the algorithmic le
 
 There are at least two classes of abstractions that separate protocol-level models of fault-tolerant distributed algorithms from their implementations.  One is to intertwine the environmental model with the system description. For example, the behaviors of nodes are naturally specified as a transition system in which transitions are guarded by the node's fault state. But faults are part of the environment; an implementation does not typically use its own fault status to choose actions! Another class of abstractions is used to simplify models.  For example, message passing might be abstracted with shared state, or a node's local behavior is elided and instead, the output is constrained by a \emph{specification} of the behavior.
 
-In this paper, we present a fault-tolerant distributed systems model, and use that model to verify several variant implementations of the Byzantine fault-tolerant Hybrid Oral Messages algorithm (\OMH)~\cite{Lincoln-Rushby}. The model combines ideas from the literature and folklore to build scalable and modular formal models suitable for infinite-state model-checking, and it reduces the need for ad-hoc abstractions and optimizations. In Section~\ref{sec:model}, we present the important aspects of the model, including calendar automata, originally developed by Dutertre and Sorea~\cite{cal}, symbolic fault-injection, and abstract transition systems for verification.
+In this paper, we present a fault-tolerant distributed systems model, and use that model to verify several variant implementations of the Byzantine fault-tolerant Hybrid Oral Messages algorithm (\OMH)~\cite{Lincoln-Rushby}. The model combines various ideas from the literature and individual verification efforts to build scalable and modular formal models suitable for infinite-state model-checking, and it reduces the need for ad-hoc abstractions and optimizations. In Section~\ref{sec:model}, we present the important aspects of the model, including calendar automata, originally developed by Dutertre and Sorea~\cite{cal}, symbolic fault-injection, and abstract transition systems for verification.
 
  %% There are three aspects of the framework: (1) \emph{calendar automata}, originally developed by Dutertre and Sorea~\cite{cal} for specifying real-time systems; (2) symbolic fault injection for decomposing the effects of faults from the system specification, and (3) \emph{abstract state machines observers}, useful for abstracting counterexamples. The framework is suitable for infinite-state model-checking supported by satisfiability modulo theories (SMT).
 
 We use the model to verify implementation-level models of $\OMH$ in which message passing is explicit, nodes are not forced to execute strictly synchronously, and voting is explicit. In short, the models corresponds closely with an implementation of the algorithm. In Section~\ref{sec:byz}, we first describe \OMH, then an implementation of it that uses the Boyer-Moore Fast Majority Vote algorithm (Fast~MJRT)~\cite{mjrty}. We then describe a set of modular invariants, such that the invariants only concern specific aspects of the model (e.g., faults, local node behavior, or the passage of time). The verification is interesting in its own right, as it is the first fully parametric (on the number of nodes) model-checked \emph{implementation} of the algorithm.
 
 In Section~\ref{sec:experimental}, we first show that despite being implementation-level, the model is scalable. Developing invariants requires some user guidance, and isolated changes to an implementation should require isolated modifications to the model and proof. To demonstrate this, we modify the \OMH implementation along the dimensions of faults (by adding an omissive-asymetric fault type~\cite{omissive}), time (by making a time-triggered model), and local behavior (by changing the majority vote to a mid-value selection) and show that in each case, the modifications are small and modular.
+
+Our primary contributions are (1) a model-checking verification of an $\OMH$ implementation, and (2) demonstrating that our modeling paradigm allows for modular verification.
 
 Finally, in Section~\ref{sec:related} we describe related work, and we make concluding remarks in Section~\ref{sec:conclusions}.
 
