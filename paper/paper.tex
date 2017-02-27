@@ -99,7 +99,7 @@ We use the model to verify implementation-level models of $\OMH$ in which messag
 
 In Section~\ref{sec:experimental}, we first show that despite being implementation-level, the model is scalable. Developing invariants requires some user guidance, and isolated changes to an implementation should require isolated modifications to the model and proof. To demonstrate this, we modify the \OMH implementation along the dimensions of faults (by adding an omissive-asymetric fault type~\cite{omissive}), time (by making a time-triggered model), and local behavior (by changing the majority vote to a mid-value selection) and show that in each case, the modifications are small and modular.
 
-Our primary contributions are (1) a model-checking verification of an $\OMH$ implementation, and (2) demonstrating that our modeling paradigm allows for modular verification.
+Our primary contributions are (1) a model-checking verification of an $\OMH$ implementation, and (2) demonstrating that our modeling paradigm allows for modular verification. Additionally, the idea of symbolic fault injection (Section~\ref{sec:kibitzer}) is novel.
 
 Finally, in Section~\ref{sec:related} we describe related work, and we make concluding remarks in Section~\ref{sec:conclusions}.
 
