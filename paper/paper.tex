@@ -148,7 +148,7 @@ The following laws must hold of a transition system $\mathcal{M}$ implementing a
 
 \item \label{cal:c} In all states, if the current time is strictly less than every calendar event, then the only enabled transition is a \emph{time progress} update: $\forall \sigma \in S$, $\forall (e_i, t_i) \in \sigma(cal)$, if $\sigma(now) < t_i$, then $\forall \sigma'$ such that $\sigma \rightarrow \sigma'$, $\sigma' = \sigma[now := \min(cal)]$.
 
-\item \label{cal:d} In all states, if the current time equals a timeout, then the only transitions enabled are calendar event updates associated with the timeout: $\forall \sigma \in S$, $\exists (e_i, t_i) \in \sigma(cal)$ such that $\sigma(now) = t_i$, then $\forall \sigma'$ such that $\sigma \rightarrow \sigma'$, $\sigma'(now) = \sigma(now)$, $\sigma'(c_j) = \sigma(c_j)$ for all $c_j \in \sigma(c)$ such that $c_j \neq c_i$, and $c_i \notin \sigma'(c)$.
+\item \label{cal:d} In all states, if the current time equals a timeout, then the only transitions enabled are calendar event updates associated with the timeout: $\forall \sigma \in S$, $\exists (e_i, t_i) \in \sigma(cal)$ such that $\sigma(now) = t_i$ implies $\forall \sigma'$ such that $\sigma \rightarrow \sigma'$, $\sigma'(now) = \sigma(now)$, $\sigma'(c_j) = \sigma(c_j)$ for all $c_j \in \sigma(cal)$ such that $c_j \neq c_i$, and $c_i \notin \sigma'(cal)$.
 
 \end{enumerate}
 
@@ -174,17 +174,17 @@ In a distributed system, it is convenient to distinguish global actions and loca
 
 Again, following Dutetre and Sorea, we associate calendar events with channels in a distributed system~\cite{cal}. Specializing calendars to message passing does not lose generality since all external communication from an individual process can be abstracted as message passing. Furthermore, fault models can be abstracted to act over channels rather than processes~\cite{abstractions}. The calendar introduces real-time constraints on when processes send and receive messages.
 
-Assume processes are indexed from a finite set $\Id$. A \emph{channel} from process $i$ to $j$ is an ordered pair $(i,j)$. Define a set of messages $\Msg$. Given a channel and a timeout, let $send$ be a relation on messages sent on a channel at a given time:
+Assume processes are indexed from a finite set $\Id$. A \emph{channel} from process $i$ to $j$ is an ordered pair $(i,j)$. Fix a set of messages $\Msg$. Given a channel and a timeout, let $send$ be a relation on messages sent on a channel at a given time:
 $$send \subseteq \Id \times \Id \times \mathbb{R} \times \Msg$$
 So $send(i, j, t, m)$ holds iff $i$ sends to $j$ message $m$ at time $t$. Likewise, let
 $$recv \subseteq \Id \times \Id \times \mathbb{R} \times \Msg$$
 be a relation on messages received on a channel at a time, so that $recv(i, j, t, m)$ holds iff the message $m$ received by $j$ from $i$ at time $t$.
 
-In the absence of faults, we require that messages received were previously sent and not previously received: if $recv(i, j, t, m)$, then $\exists t'$ such that $send(i, j, t', m)$ where $t' < t$, and $\neg\exists t''$ such that $t' < t'' < t$ and $recv(i, j, t'', m) = recv(i, j, t, m)$. (We address faults in Section~\ref{sec:kibitzer}.)
+In the absence of faults, we require that messages received were previously sent and not previously received: if $(i, j, t, m) \in recv$, then $\exists t'$ such that $(i, j, t', m) \in recv$ where $t' < t$, and $\neg\exists t''$ such that $t' < t'' < t$ and $(i, j, t'', m) = (i, j, t, m)$. (We address faults in Section~\ref{sec:kibitzer}.)
 
 Then an event calendar for sending and receiving messages on channels is the union of the $send$ and $recv$ relations.
 
-The event of receiving a message initiates a process to update its local transition system and generate additional messages to send. When the process is updating its local transition system, the event calendar is paused. That is, updating an event $recv(i, j, t, m)$ also includes updating $j$'s transition system.
+The event of receiving a message initiates a process to update its local transition system and generate additional messages to send. When the process is updating its local transition system, the event calendar is paused. That is, updating an event $(i, j, t, m) \in recv$ also includes updating $j$'s transition system.
 
 %% \subsection{Synchronous Observers and }\label{sec:sync}
 
