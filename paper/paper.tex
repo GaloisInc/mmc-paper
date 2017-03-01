@@ -383,7 +383,15 @@ Here we present two classes of experimental results. First, we demonstrate the s
 We present benchmarks in Figure~\ref{fig:benchmark}. The benchmarks were
 performed on a server with Intel Xeon E312xx (Sandy Bridge) CPUs. The table provides execution times in seconds, with a timeout limit of one hour, for verifying the model, given a selected number of relays and receivers. The voting logic is in the receivers, so they have substantially more state than the relays, and dominate the execution time. The execution times sums the execution times for verifying each of the eleven lemmas individually, as well as the final agreement and validity theorems. Each proof incurs the full startup, parsing, type-checking, and model-generation time of SAL. Observe the theorems hold even in the degenerate cases of one relay or one receiver.
 
-As a point of comparison, Rushby presents an elegant high-level model of \OM{1}, also in SAL, but using BDD-based model-checking~\cite{Rushby:OM1}. For small values, the verification is much faster, likely due to making only one call to SAL. However, for six relays and two receivers, it takes 449~seconds and timeouts (at one hour) for seven relays and two receivers.
+As a point of comparison, Rushby presents an elegant high-level model of
+\OM{1}, also in SAL~\cite{Rushby:OM1}. For small numbers of relays/receivers,
+the verification of Rushby's model is much faster, likely due to making only
+one call to SAL. However, for six relays and two receivers, it takes
+449~seconds and timeouts (at one hour) for seven relays and two receivers.
+Checking Rushby's model requires use of symbolic, BDD-based model-checking
+techniques which are well-known to scale poorly. On the other hand, our model
+requires the use of $k$-induction which scales well, but requires (inductive)
+invariants to be provided.
 
 
 \subsection{Modular Verification}\label{sec:modular}
