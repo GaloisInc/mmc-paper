@@ -1,20 +1,21 @@
 \documentclass{llncs/llncs}
 
-\usepackage{ifthen}
-\usepackage{xcolor}
-\usepackage{xspace}
-\usepackage{graphicx}
 \usepackage{alltt}
+\usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{amsfonts}
 \usepackage{bm}
-\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{ifthen}
 \usepackage{multicol}
-
-\usepackage{tikz}
-\usetikzlibrary{arrows,automata}
+\usepackage{multirow}
+\usepackage{tabularx}
 \usepackage{tikz-cd}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{xspace}
+
+\usetikzlibrary{arrows,automata}
 \usetikzlibrary{positioning}
 
 \newcommand{\OM}[1]{\ensuremath{\mathrm{OM}(#1)}\xspace}
@@ -25,6 +26,9 @@
 \newcommand{\TO}{\ensuremath{\bm{\mathrm{T}}}\xspace}
 \newcommand{\tld}[1]{#1_{*}\xspace}
 \newcommand{\mfa}{\ensuremath{\mathit{mfa}}\xspace}
+
+% make an X-type column in a tabularx that is centered
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
 
 \newboolean{submission}  %set to true for the submission version
 \setboolean{submission}{true}
@@ -230,7 +234,7 @@ Due to the sheer size of implementation-level models, manually examining counter
 
 For verification purposes, it is important to note that if $\mathcal{M}$ and $\tld{\mathcal{M}}$ satisfy the requirements above, then $A_1 \vee \ldots \vee A_n$ is an inductive invariant of $\mathcal{M}$. We may use such an invariant freely as a powerful assumption in the proof of other invariants (see Section~\ref{sec:invariants}).
 
-The use of abstract transition systems not only allows us to scale proofs farther, but also to improve traceability and debugging while developing a model. In models like the ones described in Section~\ref{sec:modular} where there are on the order of 100 state variables and counterexample traces could be 30 steps long, the designer can be easily lost trying to identify the essence. In such cases, the values of the abstract predicates can serve to focus the designer's attention on one particular mode of the system where the counter example is taking place.
+The use of abstract transition systems not only allows us to scale proofs farther, but also to improve traceability and debugging while developing a model. In models like the ones described in Section~\ref{sec:modular} where there are on the order of 100 state variables and counterexample traces could be 30 steps long, the designer can be easily lost trying to identify the essence. In such cases, the values of the abstract predicates can serve to focus the designer's attention on one particular mode of the system where the counter example is taking place. At the present we do not have a good method for synthesizing the predicates $A_1, \dots, A_n$ automatically for general systems; they must be supplied by the user.
 
 
 \section{Modeling and Verification for Oral Messages}\label{sec:byz}
@@ -345,7 +349,7 @@ Here we present two classes of experimental results. First, we demonstrate the s
 
 \begin{figure}
   \centering
-  \begin{tabular}{c|c||c|c|c|c|c|c|c|c|c|c|}
+\begin{tabularx}{0.85\textwidth}{c|Y||Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
       \multicolumn{1}{r}{} & \multicolumn{1}{r}{} & \multicolumn{10}{c}{Receivers} \\
       \cline{2-12}
           &     & 1  &  2  &   3  &  4  &   5  &  6   &  7   &  8  &  9  &  10 \\
@@ -371,7 +375,7 @@ Here we present two classes of experimental results. First, we demonstrate the s
       \cline{2-12}
           & 10   & \TO   & -   & -    & -   & -    & -    & -    & -   & -   & -   \\
       \cline{2-12}
-  \end{tabular}
+  \end{tabularx}
   \caption{Benchmark of full proof computation time for $\OMH(1)$ implementation. Times are in seconds with a timeout (\TO) limit of one hour. Dashes ('-') denote no benchmark was run.}
   \label{fig:benchmark}
 \end{figure}
@@ -390,13 +394,11 @@ As a point of comparison, Rushby presents an elegant high-level model of \OM{1},
   \hline
                                   & Transition systems\linebreak (7 total)  &Definitions\linebreak (58 total) & Invariants\linebreak (11 total) & Invariant classes\linebreak (5 total) \\
   \hline \hline
-  %% No Fault Model                  & receivers & 8 modified & 2 modified & ATS, faults \\
-  %% \hline
-  Omissive Asymmetric Faults       & none      & 1 new, 2 modified & 2 modified & faults             \\
+Omissive \mbox{Asymmetric} Faults       & none      & \mbox{1 new, 2} \mbox{modified} & 2 modified & faults             \\
   \hline
-  Time-Triggered Messaging        & source, relays, receivers, ATS & 3 new & 2 modified, 3 modified & calendar, faults \\
+Time-Triggered \mbox{Messaging}        & source, relays, receivers, ATS & 3 new & \mbox{2 modified, 3} \mbox{modified} & calendar, faults \\
   \hline
-  Mid-Value Selection & receivers & 4 new, 3 modified & 2 modified & ATS, voting \\
+Mid-Value Selection & receivers & \mbox{4 new, 3} \mbox{modified} & 2 modified & ATS, voting \\
   \hline
   \end{tabular}
   \caption{Refactoring effort for protocol modifications, measured by which portions of the model have to be modified.}
