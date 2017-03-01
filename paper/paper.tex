@@ -1,5 +1,6 @@
 \documentclass{llncs/llncs}
 
+\usepackage[nocompress]{cite}
 \usepackage{alltt}
 \usepackage{amsfonts}
 \usepackage{amsmath}
@@ -73,7 +74,7 @@ the Hybrid Oral Messages algorithm that differ in the fault model, timing model,
 and local node behavior. We show that despite being implementation-level models,
 the verifications are scalable and modular, insofar as isolated changes to an
 implementation require isolated changes to the model and proofs. This work is
-carried out in SAL model-checker.
+carried out in the SAL model-checker.
 \end{abstract}
 
 \section{Introduction}
@@ -84,7 +85,7 @@ The verification of this class of systems has usually been at the algorithmic le
 
 There are at least two classes of abstractions that separate protocol-level models of fault-tolerant distributed algorithms from their implementations.  One is to intertwine the environmental model with the system description. For example, the behaviors of nodes are naturally specified as a transition system in which transitions are guarded by the node's fault state. But faults are part of the environment; an implementation does not typically use its own fault status to choose actions! Another class of abstractions is used to simplify models.  For example, message passing might be abstracted with shared state, or a node's local behavior is elided and instead, the output is constrained by a \emph{specification} of the behavior.
 
-In this paper, we present a fault-tolerant distributed systems model, and use that model to verify several variant implementations of the Byzantine fault-tolerant Hybrid Oral Messages algorithm (\OMH)~\cite{Lincoln-Rushby}. The model combines various ideas from the literature and individual verification efforts to build scalable and modular formal models suitable for infinite-state model-checking, and it reduces the need for ad-hoc abstractions and optimizations. In Section~\ref{sec:model}, we present the important aspects of the model, including calendar automata, originally developed by Dutertre and Sorea~\cite{cal}, symbolic fault-injection, and abstract transition systems for verification.
+In this paper, we present a fault-tolerant distributed systems model, and use that model to verify several variant implementations of the Byzantine fault-tolerant Hybrid Oral Messages algorithm (\OMH)~\cite{Lincoln-Rushby}. The model combines various ideas from the literature to build scalable and modular formal models suitable for infinite-state model-checking, and it reduces the need for ad-hoc abstractions and optimizations. In Section~\ref{sec:model}, we present the important aspects of the model, including calendar automata, originally developed by Dutertre and Sorea~\cite{cal}, symbolic fault-injection, and abstract transition systems for verification.
 
 We use the model to verify implementation-level models of $\OMH$ in which message passing is explicit, nodes are not forced to execute strictly synchronously, and voting is explicit. In short, the models corresponds closely with an implementation of the algorithm. In Section~\ref{sec:byz}, we first describe \OMH, then an implementation of it that uses the Boyer-Moore Fast Majority Vote algorithm (Fast~MJRT)~\cite{mjrty}. We then describe a set of modular invariants, such that the invariants only concern specific aspects of the model (e.g., faults, local node behavior, or the passage of time). The verification is interesting in its own right, as it is the first fully parametric (on the number of nodes) model-checked \emph{implementation} of the algorithm.
 
@@ -111,7 +112,7 @@ An \emph{event calendar} $\{ (e_0, t_0), (e_1, t_1), \ldots, (e_n, t_n) \}$ is a
 
 Let $cal$ be an event calendar and $c_i, c_j \in cal$ be calendar events. Define an ordering on calendar events such that $c_i \leq c_j$ iff $t_i \leq t_j$, and $\min(cal) = \{ c_i | \forall c_j \in cal, \, c_i \leq c_j  \}$ are the minimum elements of $cal$.
 
-Let a transition system $\mathcal{M} = (S, I, \rightarrow)$, be a set of states $S$, a set of initial states $I \subseteq S$, and a transition relation $\rightarrow \subseteq S \times S$. We implicitly assume a set of state variables such that each state $\sigma \in S$ is a total function that maps state variables to values. We sometimes prime a state to denote that satisfies the transition relation: $\sigma \rightarrow \sigma'$. We also sometimes use a variable assignment notation to describe what state variables are specifically updated: e.g., $\sigma' = \sigma[v := v+1]$.
+Let a transition system $\mathcal{M} = (S, I, \rightarrow)$, be a set of states $S$, a set of initial states $I \subseteq S$, and a transition relation $\rightarrow \subseteq S \times S$. We implicitly assume a set of state variables such that each state $\sigma \in S$ is a total function that maps state variables to values. We sometimes prime a state to denote that it satisfies the transition relation: $\sigma \rightarrow \sigma'$. We also sometimes use a variable assignment notation to describe what state variables are specifically updated: e.g., $\sigma' = \sigma[v := v+1]$.
 
 We distinguish two special state variables in a transition system: (1) $now \in \mathbb{R}$ denotes the current time in the state, and (2) $cal$ is an event calendar.
 
@@ -122,7 +123,7 @@ The following laws must hold of a transition system $\mathcal{M}$ implementing a
 
 \item \label{cal:c} In all states, if the current time is strictly less than every calendar event, then the only enabled transition is a \emph{time progress} update: $\forall \sigma \in S$, $\forall (e_i, t_i) \in \sigma(cal)$, if $\sigma(now) < t_i$, then $\forall \sigma'$ such that $\sigma \rightarrow \sigma'$, $\sigma' = \sigma[now := \min(cal)]$.
 
-\item \label{cal:d} In all states, if the current time equals a timeout, then the only transitions enabled are calendar event updates associated with the timeout: $\forall \sigma \in S$, $\exists (e_i, t_i) \in \sigma(cal)$ such that $\sigma(now) = t_i$ implies $\forall \sigma'$ such that $\sigma \rightarrow \sigma'$, $\sigma'(now) = \sigma(now)$, $\sigma'(c_j) = \sigma(c_j)$ for all $c_j \in \sigma(cal)$ such that $c_j \neq c_i$, and $c_i \notin \sigma'(cal)$.
+\item \label{cal:d} In all states, if the current time equals a timeout, then the only transitions enabled are calendar event updates associated with the timeout: $\forall \sigma \in S$, $\exists (e_i, t_i) \in \sigma(cal)$ such that $\sigma(now) = t_i$ implies $\forall \sigma'$ such that $\sigma \rightarrow \sigma'$, $\sigma'(now) = \sigma(now)$, $\sigma'(c_j) = \sigma(c_j)$ for all $c_j \in \sigma(cal)$ such that $c_j \neq c_i$ (recalling that by convention, $c_i = (e_i, t_i)$), and $c_i \notin \sigma'(cal)$.
 
 \end{enumerate}
 
@@ -442,13 +443,13 @@ Moreover, we are agnostic about how lemmas are discovered. As techniques like IC
 % ------------------------------------------------------------
 \section{Related Work}\label{sec:related}
 
-The Oral Messages algorithm and its variants and its variants have a long history of formal verification. \OM{1} was verified in both the PVS and ACL2 interactive theorem-provers~\cite{Young97:IC}. Also in ACL2, an implementation of a circuit design to implement \OM{1} is given~\cite{om-acl2-impl}; the low-level model most closely relates to our level of detail. A refinement-based verification approach is used, and \OM{1} is specialized to fixed number of nodes. Bokor~\emph{et~al.} describe a message-passing model for synchronous distributed algorithms that is particularly amenable to partial-order reduction for explicit-state model-checking~\cite{Bokor2010}. The model is efficient for up to five nodes, but results are not presented beyond that. Very recently, Jovanovi{\'{c}} and Dutertre use a ``flattened'' high-level model of \OM{1} as a benchmark for IC3 augmented with $k$-induction~\cite{pdr-kind}.
+The Oral Messages algorithm and its variants and its variants have a long history of formal verification. \OM{1} was verified in both the PVS and ACL2 interactive theorem-provers~\cite{Young97:IC}. Also in ACL2, an implementation of a circuit design to implement \OM{1} is given~\cite{om-acl2-impl}; the low-level model most closely relates to our level of detail. A refinement-based verification approach is used, and \OM{1} is specialized to a fixed number of nodes. Bokor~\emph{et~al.} describe a message-passing model for synchronous distributed algorithms that is particularly amenable to partial-order reduction for explicit-state model-checking~\cite{Bokor2010}. The model is efficient for up to five nodes, but results are not presented beyond that. Very recently, Jovanovi{\'{c}} and Dutertre use a ``flattened'' high-level model of \OM{1} as a benchmark for IC3 augmented with $k$-induction~\cite{pdr-kind}.
 
 Moreover, our work is heavily influenced by previous verifications of fault-tolerant and real-time systems in SAL~\cite{Rushby:OM1,cal,timed-systems}.
 
 % ------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusions}
-This work fits within a larger project, in collaboration with Honeywell Labs, to build an \emph{architectural domain-specific language} (ADSL) for specifying and verifying distributed fault-tolerant systems. The ADSL should be able to synthesize both software and/or hardware implementations as well as formal models for verification. Before building such an ADSL, we needed a scalable general formal model to which to compile, leading to the work presented in this paper. We hypothesize that the ADSL will make refactoring even easier, and we can generate invariants or invariant templates useful for verification. Indeed, we have developed a preliminary ADSL that generates C code as well as formal models in SRI's Sally~\cite{pdr-kind}, to be described in future work.\footnote{\url{https://github.com/GaloisInc/atom-sally}}
+This work fits within a larger project, in collaboration with Honeywell Labs, to build an \emph{architectural domain-specific language} (ADSL) for specifying and verifying distributed fault-tolerant systems. The ADSL should be able to synthesize both software and/or hardware implementations as well as formal models for verification. Before building such an ADSL, we needed a scalable general formal model to which to compile, leading to the work presented in this paper. We hypothesize that the ADSL will make refactoring even easier, and we can generate invariants or invariant templates useful for verification. Indeed, we have developed a preliminary ADSL that generates C code as well as formal models in SRI's Sally~\cite{pdr-kind}, to be described in a future paper.\footnote{\url{https://github.com/GaloisInc/atom-sally}}
 
 Beyond building an ADSL, another avenue of research is producing a formal proof that a software implementation satisfies the node specification in our formal model. While our model of node behavior is low-level, there are gaps. For example, our work is in SAL's language of guarded commands~\cite{SAL} and needs to be either refined or verified to be equivalent to a software implementation's semantics. Another aspect is that behavior related to networking, serialization, etc. is left abstract, implicit in the $send$ and $recv$ functions.
 
