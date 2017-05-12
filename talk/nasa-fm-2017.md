@@ -1,4 +1,15 @@
-# Modular Model Checking of a Distributed, Fault-tolerant System
+#
+
+\begin{center}
+\Large
+Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
+
+\vspace{2cm}
+\normalsize
+Benjamin F Jones\footnote{Galois, Inc. -- \url{http://galois.com}} and
+Lee Pike\footnotemark[1]
+\end{center}
+
 
 # Challenge
 
@@ -54,16 +65,24 @@ of the 3 last points
 
 # Oral Messages Algorithm
 
+TODO flesh these out
+
+* what is OM(1)?
+* why study OM(1)?
+* prior art
+
 
 # Oral Messages with 1 Round
 
-TODO diagram
+\begin{center}
+\includegraphics[scale=0.5]{om1_diagram.pdf}
+\end{center}
 
 
 # Hybrid Fault Model
 
 In [1], T and Park introduced their "Hybrid Fault Model" which captures
-4 different types of node fault and a system for weighting their impact.
+4 different types of fault mode and a system for weighting their impact.
 
 * Non-faulty
 * Manifestly faulty
