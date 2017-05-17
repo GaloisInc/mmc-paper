@@ -3,11 +3,12 @@
 \begin{center}
 \Large
 Modular Model-Checking of a Byzantine Fault-Tolerant Protocol
+\footnote{Supported by NASA Contract NNL14AA08}
 
 \vspace{2cm}
 \normalsize
 Benjamin F Jones\footnote{Galois, Inc. -- \url{http://galois.com}} and
-Lee Pike\footnotemark[1]
+Lee Pike\footnotemark[2]
 \end{center}
 
 
@@ -17,42 +18,41 @@ Model checking distributed, fault-tolerant systems is challenging:
 
 - large state spaces
 - non-determinism
-- complexity inherent in modeling multiple nodes behavior and faults
+- complexity inherent in modeling interacting nodes subject to various fault
+  modes
 
 
 # Coping with complexity
 
-Model checking these systems has been accomplished by resorting to ad-hoc
+Model-checking these systems has been accomplished by resorting to ad-hoc
 abstractions:
 
 - local node behavior is abstracted (e.g. replaced by pre/post conditions)
 - message passing is simplified using shared state
 - systems are modeled at small, fixed scales
 
-Ad-hoc abstractions tend to cause models to *diverge* from implementations,
-reducing their applicability.
+Ad-hoc abstraction tends to cause a model to *\textcolor{blue}{diverge from
+an implementation}*,
+reducing its applicability.
 
 
 # Modularity
 
-*TODO* rewrite
+* Model-checking these systems is further complicated when system behavior and
+fault behavior are mixed in the model.
 
-* Model checking these systems is further complicated when system behavior and
-fault behavior are mixed.
-
-* Similarly, when trying to prove that a model satisfies a property, it is very
-useful to be able to reason about the system behavior and the fault behavior
-independently and then compose the proofs. The same goes for local node
-behavior versus and communication model.
+* _Compositional reasoning_: reason about node behavior and fault
+model separately, then compose the proofs
 
 
 # What We Want in a Model
 
-The premise for this work is the following ideal:
+The premise for this work is that we want, _ideally_, to produce formal models
+of distributed systems that:
 
-1. Implementation-level detail
-2. Scalability of model checking
-3. Modularity
+1. have implementation-level detail,
+2. are tractable to the model checker,
+3. and are modular to the extent possible.
 
 
 # What We've Done
@@ -62,8 +62,13 @@ distributed, fault-tolerant systems in a way that gets us closer to the ideal
 of the 3 last points.
 
 * **Case Study**: We've taken this framework and used it to model variations on the
-  _Hybrid Oral Messages_ algorithm that vary in their timing model, node
+  _Oral Messages_ algorithm that vary in their timing model, node
   behavior, and fault model.
+
+* First model-checked verification of $\mathrm{OMH}(1)$ that:
+    - does not elide implementation level detail
+    - is parameterized over the number of nodes (verified up to 12 nodes)
+    - has a modular, inductive proof
 
 
 # Oral Messages with 1 Round
@@ -75,31 +80,33 @@ of the 3 last points.
 
 # Hybrid Fault Model
 
-In [1], T and Park introduced their "Hybrid Fault Model" which captures
-4 different fault modes and a system for weighting their impact.
+Thambidurai and Park introduced their "Hybrid Fault Model"
+\footnote{P. Thambidurai and Y.K. Park. \emph{Interactive consistency with multiple failure modes}. Symposium on Reliable Distributed Systems, 1988.}
+which captures 4 different fault modes and a system for weighting their impact.
 
 * Non-faulty
 * Manifestly faulty
 * Symmetrically faulty
 * Byzantine faulty
 
-OM(1) was shown to be tolerant of a certain weighted sum of these fault types.
+$\mathrm{OM(1)}$ was shown to be tolerant of a certain weighted sum of these fault types.
 In the classical case where only byzantine faults are considered and their are
 3 lieutenants, the system tolerates at most 1 fault.
 
 
 # Hybrid Oral Messages Algorithm
 
-In the course of formalizing this result on fault-tolerance, it was discovered
-[2] that the proof was wrong. However, the OM(1) algorithm can be adapted
-to one that satisfies the conclusion of [1].
+* In the course of formalizing this result on fault-tolerance, it was discovered
+\footnote{P. Lincoln and J. Rushby. \emph{A formally verified algorithm for interactive consistency under a hybrid fault model}. In Fault Tolerant Computing Symposium 23, 1993.}
+that the proof was wrong. However, the $\mathrm{OM(1)}$ algorithm can be adapted
+to one that satisfies the conclusion of Thambidurai and Park.
 
-This algorithm, due to Lincoln and Rushby, is called OMH(1).
+* This algorithm, due to Lincoln and Rushby, is called $\mathrm{OMH(1)}$.
 
 
 # Three Systematic Abstractions
 
-In this framework for model systems, we use three principal abstractions:
+In this framework for modeling systems, we use three principal abstractions:
 
 1. Calendar automata
     - modeling message passing, including details like
@@ -117,23 +124,39 @@ In this framework for model systems, we use three principal abstractions:
 * typical approach to modeling faults: add a new state variable to for each
 node, indicating fault state. The node's logic then acts on this value.
 
-* fault injection:
-  - divorce fault behavior from node behavior by injecting faults at the
-    channel level
-  - faulty values are represented as uninterpreted constants
-  - faulty values are constrained depending on the fault type
-  - separation of concerns allows us to reason about the fault model in
-    isolation from local node behavior
+\begin{center}
+\includegraphics[scale=1.0]{fstate.pdf}
+\end{center}
+
+
+# Fault Injection
+
+Fault injection divorces fault behavior from node behavior by injecting faults at the
+channel level.
+
+* faulty values are represented as uninterpreted constants
+* faulty values are constrained depending on the fault type
+* separation of concerns allows us to reason about the fault model in
+  isolation from local node behavior
 
 
 # Verification: Lemma Diagram
 
-Our verification of the case study proceeds by $k$-induction, using SAL [3].
+Our verification of the case study proceeds by $k$-induction, using SAL
+\footnote{SAL. Computer Science Lab, SRI International.
+\url{http://sal.csl.sri.com}}.
 We strengthen the inductive hypothesis using hand-crafted lemmas which are
 organized as follows:
 
 \begin{center}
 \includegraphics[scale=0.75]{proof-structure.pdf}
+\end{center}
+
+
+#
+
+\begin{center}
+\includegraphics[scale=0.3]{proof-structure-agreement.jpeg}
 \end{center}
 
 
@@ -174,13 +197,11 @@ Omissive \mbox{Asymmetric} Faults       & \mbox{1 new, 2} \mbox{modified} & 2 mo
 \end{center}
 
 
-# References
+# Future Work
 
-[1] P. Thambidurai and Y.K. Park. _Interactive consistency with multiple failure modes_.
-Symposium on Reliable Distributed Systems, 1988.
+As part of NASA Contract NNL14AA08 we are working on a modeling workbench (DSL
+and surrounding tools) to support modeling in the framework described here.
 
-[2] P. Lincoln and J. Rushby. _A formally verified algorithm for interactive consistency under a hybrid fault model_. In Fault Tolerant
-Computing Symposium 23, 1993.
-
-[3] SAL. Computer Science Lab, SRI International.
-\url{http://sal.csl.sri.com}.
+\begin{center}
+\includegraphics[scale=0.75]{adsl.pdf}
+\end{center}
